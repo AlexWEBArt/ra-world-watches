@@ -1,0 +1,207 @@
+.data-processor {
+  width: 750px;
+  margin: 50px auto;
+}
+
+.form-processor {
+  display: flex;
+  justify-content: center;
+  align-items: last baseline;
+}
+
+.label-processor {
+  display: flex;
+  flex-direction: column;
+}
+
+input {
+  width: 200px;
+  height: 50px;
+  padding-left: 10px;
+  margin-top: 10px;
+  margin-right: 10px;
+  border: #000 solid 1px;
+  border-radius: 10px;
+}
+
+.form-btn {
+  height: 50px;
+  background-color: white;
+  border: #000 solid 1px;
+  border-radius: 10px;
+  box-shadow: 0 0 2px 1px rgb(0 0 0 / 0.6);
+}
+
+.form-btn:active {
+  scale: 0.97;
+  box-shadow: 0 0 2px 2px rgb(0 0 0 / 0.8);
+}
+
+.clocks-place {
+  display: flex;
+  flex-wrap: wrap;
+  width: 750px;
+  margin-top: 100px;
+}
+
+.clock {
+  position: relative;
+  width: 250px;
+  text-align: center;
+}
+
+.close {
+  position: absolute;
+  top: -10px; left: 205px; bottom: 0; right: 0; margin: 0;
+  opacity: 0.2;
+  cursor: pointer;
+  width: 35px;
+  height: 35px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  border: 1px solid rgb(50, 50, 50);
+  background-color: rgb(255, 255, 255);
+  border-radius: 100%;
+  color: rgb(50, 50, 50);
+}
+
+
+/* Clocks style and animation */
+
+svg {
+  width: 200px;
+
+  fill: white;
+  stroke: black;
+  stroke-width: 1;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 10px rgb(0 0 0 / 0.6));
+
+  transform: rotate(-90deg);
+
+  --start-seconds: 57;
+  --start-minutes: 45;
+  --start-hours: 11;
+}
+
+.marks {
+    transform: translate(20px, 20px);
+    stroke-width: 0.2;
+  }
+  .marks > line:nth-child(1) {
+    transform: rotate(30deg); 
+  }
+  .marks > line:nth-child(2) {
+    transform: rotate(calc(2 * 30deg));
+  }
+  .marks > line:nth-child(3) {
+    transform: rotate(calc(3 * 30deg));
+    stroke-width: 0.5;
+  }
+  .marks > line:nth-child(4) {
+    transform: rotate(calc(4 * 30deg));
+  }
+  .marks > line:nth-child(5) {
+    transform: rotate(calc(5 * 30deg));
+  }
+  .marks > line:nth-child(6) {
+    transform: rotate(calc(6 * 30deg));
+    stroke-width: 0.5;
+  }
+  .marks > line:nth-child(7) {
+    transform: rotate(calc(7 * 30deg));
+  }
+  .marks > line:nth-child(8) {
+    transform: rotate(calc(8 * 30deg));
+  }
+  .marks > line:nth-child(9) {
+    transform: rotate(calc(9 * 30deg));
+    stroke-width: 0.5;
+  }
+  .marks > line:nth-child(10) {
+    transform: rotate(calc(10 * 30deg));
+  }
+  .marks > line:nth-child(11) {
+    transform: rotate(calc(11 * 30deg));
+  }
+  .marks > line:nth-child(12) {
+    transform: rotate(calc(12 * 30deg));
+    stroke-width: 0.5;
+}
+
+
+.seconds,
+.minute,
+.hour
+{
+  transform: translate(20px, 20px) rotate(0deg);
+}
+.seconds {
+  stroke-width: 0.3;
+  stroke: #d00505;
+  filter: drop-shadow(0.5px 0 0.5px rgb(0 0 0 / 0.6));
+
+  transform: translate(20px, 20px) rotate(calc(var(--start-seconds) * 6deg));
+
+  animation: rotateSecondsHand 60s steps(60) infinite;
+}
+.minute {
+  stroke-width: 0.6;
+  filter: drop-shadow(0.5px 0 1px rgb(0 0 0 / 0.6));
+
+  transform: translate(20px, 20px) rotate(calc(var(--start-minutes) * 6deg));
+
+  animation: rotateMinuteHand 3600s steps(60) infinite;
+  animation-delay: calc(var(--start-seconds) * -1 * 1s);
+}
+.hour {
+  stroke-width: 1;
+  filter: drop-shadow(1px 0 1px rgb(0 0 0 / 0.6));
+
+  transform: translate(20px, 20px) rotate(calc(var(--start-hours) * 30deg));
+
+  animation: rotateHourHand calc(12 * 60 * 60s) linear infinite;
+  animation-delay: calc(calc(var(--start-minutes) * -60 * 1s) + calc(var(--start-seconds) * -1 * 1s));
+}
+.pin {
+  stroke: #d00505;
+  stroke-width: 0.2;
+}
+
+.tiaText {
+  font-size: 2px;
+  font-family: sans-serif;
+  text-align: center;
+  transform: translate(14px, 19px) rotate(90deg);
+  fill: #241515;
+  stroke: none;
+}
+
+@keyframes rotateSecondsHand {
+  from {
+    transform: translate(20px, 20px) rotate(calc(var(--start-seconds) * 6deg));
+  }
+  to {
+    transform: translate(20px, 20px) rotate(calc(var(--start-seconds) * 6deg + 360deg));
+  }
+}
+
+@keyframes rotateMinuteHand {
+  from {
+    transform: translate(20px, 20px) rotate(calc(var(--start-minutes) * 6deg));
+  }
+  to {
+    transform: translate(20px, 20px) rotate(calc(var(--start-minutes) * 6deg + 360deg));
+  }
+}
+
+@keyframes rotateHourHand {
+  from {
+    transform: translate(20px, 20px) rotate(calc(var(--start-hours) * 30deg));
+  }
+  to {
+    transform: translate(20px, 20px) rotate(calc(var(--start-hours) * 30deg + 360deg));
+  }
+}
