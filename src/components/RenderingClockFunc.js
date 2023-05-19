@@ -3,20 +3,26 @@ export default function Clock(props) {
 
     const nowTime = new Date();
 
-    // function formatDate(date, timezone) {
-    //     return date.getUTCFullYear() + '-' +
-    //        (String(date.getUTCMonth() + 1).length === 1 ? '0' + (date.getUTCMonth() + 1) : date.getUTCMonth() + 1) + '-' +
-    //        (String(date.getUTCDate()).length === 1 ? '0' + date.getUTCDate() : date.getUTCDate()) + 'T' +
-    //        (String(date.getUTCHours()).length === 1 ? '0' + date.getUTCHours() : date.getUTCHours()) + ':' +
-    //        (String(date.getUTCMinutes()).length === 1 ? '0' + date.getUTCMinutes() : date.getUTCMinutes()) + ':' +
-    //        (String(date.getUTCSeconds()).length === 1 ? '0' + date.getUTCSeconds() : date.getUTCSeconds()) + '.' +
-    //        (String(date.getUTCMilliseconds()).length === 1 ? '00' + date.getUTCMilliseconds() : 
-    //         String(date.getUTCMilliseconds()).length === 2 ? '0' + date.getUTCMilliseconds() : date.getUTCMilliseconds()) +
-    //        timezone;
-    //     }
-    // const date = new Date(Date.parse(formatDate(nowTime, timezone)))
+    let tiaText;
 
-    const updateTime = (Date.now() + (nowTime.getTimezoneOffset() * 60 * 1000)) + (timezone.replace(/[0]/g, '') * 60 * 60 * 1000)
+    const timezoneMultiplier = (timezone) => {
+        if (timezone.length === 5) {
+            tiaText = name + ' (' + timezone.slice(0, 3) + ':' + timezone.slice(3, 5) + ')'
+            const multiplier = (Number(timezone[1] + timezone[2]) + Number(timezone[3] === '3' ? 0.5 : timezone[3] === '4' ? 0.75 : 0));
+            if (timezone[0] === '-') {
+                return '-' + multiplier
+            }
+            return multiplier
+        }
+        if (timezone.length === 4) {
+            tiaText = name + ' (' + timezone.slice(0, 2) + ':' + timezone.slice(2, 4) + ')'
+            return Number(timezone[0] + timezone[1]) + Number(timezone[2] === '3' ? 0.5 : timezone[2] === '4' ? 0.75 : 0)
+        }
+    }
+
+    
+
+    const updateTime = (Date.now() + (nowTime.getTimezoneOffset() * 60 * 1000)) + (timezoneMultiplier(timezone) * 60 * 60 * 1000)
 
     const currentTime = new Date(updateTime)
 
@@ -46,7 +52,7 @@ export default function Clock(props) {
                     <line x1="0" y1="0" x2="13" y2="0" className="minute" />
                     <line x1="0" y1="0" x2="16" y2="0" className="seconds" />
                     <circle cx="20" cy="20" r="0.7" className="pin" />
-                    <text x="-7" y="0" className="tiaText">{name + ' (' + timezone.slice(0, 3) + ':' + timezone.slice(3, 5) + ')'}</text>
+                    <text x="-7" y="0" className="tiaText">{tiaText}</text>
                 </svg>
                 <span className="close" onClick={() => handleCliceClose(id)}>
                     &#10006;

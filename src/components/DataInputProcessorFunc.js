@@ -1,5 +1,6 @@
 import React from "react";
 import Clock from "./RenderingClockFunc";
+import Preloader from "./PreloaderFunc";
 import shortid from "shortid";
 
 export default class DataProcessor extends React.Component {
@@ -10,23 +11,28 @@ export default class DataProcessor extends React.Component {
             timezone: '',
             clocksData: [],
             clocks: [],
+            firstTimeStamp: '',
+            preloader: false,
         };
         this.timeout = null;
     }
 
     handleSubmit = (e) => {
         e.preventDefault()
-        // const id = shortid.generate()
-        this.setState({ clocksData: [
-            ...this.state.clocksData, 
-            { id: shortid.generate(), name: this.state.name, timezone: this.state.timezone }
-            // <Clock key={id} id={id} name={this.state.name} timezone={this.state.timezone} handleCliceClose={this.handleCliceClose}/>
-        ]})
+   
+        if (this.state.preloader) {return null}
+        this.setState({
+            clocksData: [
+                ...this.state.clocksData,
+                { id: shortid.generate(), name: this.state.name, timezone: this.state.timezone }
+            ]
+        })
+        this.setState({ preloader: true })
     }
 
     handleChange = (e) => {
         const { name, value } = e.target;
-        name === 'name' ? this.setState(((prevState) => ({...prevState, name: value}))) : this.setState(((prevState) => ({...prevState, timezone: value})))
+        name === 'name' ? this.setState(((prevState) => ({ ...prevState, name: value }))) : this.setState(((prevState) => ({ ...prevState, timezone: value })))
     }
 
     handleCliceClose = (id) => {
@@ -40,32 +46,45 @@ export default class DataProcessor extends React.Component {
     }
 
     loadClock() {
-        // const timeNow = new Date()
-
-        // if (timeNow.getMilliseconds() = 0)
-        setTimeout(() => {
-            console.log('timeout')
-            if (this.state.clocksData.length !== this.state.clocks.length) {
-                console.log('timeout2')
-                const renderingClocks = this.state.clocksData.filter((item, index) => {
-                    if (!this.state.clocks[index]) { return item}
-                return item.name === this.state.clocks[index].props.name
-                })
-                renderingClocks.forEach( item => this.setState({ clocks: [
-                    ...this.state.clocks, 
-                    <Clock key={item.id} id={item.id} name={item.name} timezone={item.timezone} handleCliceClose={this.handleCliceClose}/>
-                ]}))
+        if (this.state.clocksData.length !== this.state.clocks.length) {
+            const renderingClocks = this.state.clocksData.filter((item, index) => {
+                if (!this.state.clocks[index]) { return item }
+                return item.name !== this.state.clocks[index].props.name
+            })                                                                                  // создание массива часов которые необходимо отрисовать
+            if (!this.state.clocks[0]) {
+                renderingClocks.forEach(item => this.setState({
+                    clocks: [
+                        ...this.state.clocks,
+                        <Clock key={item.id} id={item.id} name={item.name} timezone={item.timezone} handleCliceClose={this.handleCliceClose} />
+                    ]
+                }))                                                                             // отрисовка первых часов приложения
+                this.setState({ firstTimeStamp: new Date().getMilliseconds() })                 // установка временной метки (милисекунд) начала движения секундной стрелки (шаблон для последующих часов)
+                this.setState({ preloader: false })
+            } else {
+                if (new Date().getMilliseconds() - this.state.firstTimeStamp < 10 && new Date().getMilliseconds() - this.state.firstTimeStamp > 0) {
+                    renderingClocks.forEach(item => this.setState({
+                        clocks: [
+                            ...this.state.clocks,
+                            <Clock key={item.id} id={item.id} name={item.name} timezone={item.timezone} handleCliceClose={this.handleCliceClose} />
+                        ]
+                    }))                                                                         // если погрешность между отрисовкой новых часов и временной меткой начала движения секундной стрелки первых часов меньше 10, то часы отрисуються
+                    this.setState({ preloader: false })
+                } else {
+                    setTimeout(() => {
+                        console.log('timeout')
+                        this.loadClock()
+                    }, 10)                                                                      // если нет, то функция будет вызываться до тех пор, пока не будет соблюдено условие выше
+                }
             }
-            this.timeout = window.setTimeout(this.loadClock(), 1000)
-        }, 1000)
+        }
     }
-    
+
     componentDidMount() {
-        this.loadClock()
         console.log('componentDidMount');
     }
 
     componentDidUpdate() {
+        this.loadClock()
         console.log('componentDidUpadate')
     }
 
@@ -88,15 +107,16 @@ export default class DataProcessor extends React.Component {
                     </label>
                     <label className='label-processor'>
                         <span>Временная зона (+/-hhmm)</span>
-                        <input className="input-timezone" name='timezone' pattern="^[-+][01][0-9][03]0$" required onChange={this.handleChange}></input>
+                        <input className="input-timezone" name='timezone' pattern="^[-+][012][0-9][03][0]|[+-][012][0-9]4{1}5{1}|[012][0-9][03][0]|[012][0-9]4{1}5{1}$" required onChange={this.handleChange}></input>
                     </label>
                     <button className='form-btn'>Добавить</button>
                 </form>
                 <div className="clocks-place">
                     {clocks.map(item => item)}
+                    {this.state.preloader ? <Preloader /> : null}
                 </div>
             </div>
         )
-        
+
     }
 }
