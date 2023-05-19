@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/ra-world-watches/static/css/main.c33b70f6.css",
+    "main.js": "/ra-world-watches/static/js/main.b502d2db.js",
+    "static/js/787.0b68bcf6.chunk.js": "/ra-world-watches/static/js/787.0b68bcf6.chunk.js",
+    "index.html": "/ra-world-watches/index.html",
+    "main.c33b70f6.css.map": "/ra-world-watches/static/css/main.c33b70f6.css.map",
+    "main.b502d2db.js.map": "/ra-world-watches/static/js/main.b502d2db.js.map",
+    "787.0b68bcf6.chunk.js.map": "/ra-world-watches/static/js/787.0b68bcf6.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.c33b70f6.css",
+    "static/js/main.b502d2db.js"
+  ]
+}
